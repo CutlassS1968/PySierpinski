@@ -62,20 +62,23 @@ class Hexagon:
             pygame.draw.circle(screen, (255, 255, 255), p, 3)
 
         for p in self.new_points:
-            pygame.draw.circle(screen, (255, 255, 0), p, 3)
+            pygame.draw.circle(screen, (255, 0, 0), p, 3)
 
     def update(self):
         nex_point = self.random.randint(0, 4)
         p1 = self.start_points[self.cur_point]
         p2 = self.start_points[nex_point]
         p3 = (abs(p1[0]-p2[0]), abs(p1[1]-p2[1]))
-        self.new_points.append(p3)
+        x = (2*p3[0])/3
+        y = (2*p3[1])/3
+        p4 = (x, y)
+        p5 = (p1[0]-p4[0], p1[1]-p4[1])
+        self.new_points.append(p5)
         self.cur_point = nex_point
         # p3 = ()
         # self.new_points.append(p4)
         # self.cur_point = nex_point
         # print(self.cur_point)
-
 
 
 class Display:
@@ -118,7 +121,7 @@ class Main:
             self.hexagon.draw(self.display.get_screen())
 
             # Tick the clock
-            # pygame.time.delay(60)
+            pygame.time.delay(600)
             self.clock.tick(60)
             self.display.update()
 
