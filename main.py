@@ -13,7 +13,7 @@ FOV = 100 * (math.pi / 180)
 RES_SCALE = 6
 
 # Number of rays in fov_cone scale based on size of window
-RAY_COUNT = 5
+RAY_COUNT = 3
 
 # int((WIDTH / (FOV / (360 * (math.pi/180)))) / RES_SCALE)
 
@@ -24,7 +24,7 @@ ROTATION_UNITS = 2 * (math.pi / 180)
 MOVE_UNITS = .666
 
 # Default of each ray (View Distance) = math.sqrt(math.pow(HEIGHT, 2) + math.pow(WIDTH, 2))
-GR = 100
+GR = 300
 # math.sqrt(math.pow(HEIGHT, 2) + math.pow(WIDTH, 2))
 
 # Distance till light = 0; = GR
@@ -42,39 +42,39 @@ class Hexagon:
         self.center = (WIDTH / 2, HEIGHT / 2)
         self.random = Random()
         self.random.seed()
-        self.start_points = []
-        self.new_points = []
+        self.points = []
+        # self.new_points = []
         self.gen_points()
-        self.cur_point = self.random.randint(0, 4)
+        self.cur_point = (0, 0)
 
 
     def gen_points(self):
         rad_slice = (360.0 / RAY_COUNT) * (math.pi / 180)
+        random_point = self.random.randint(0,5)
         p1 = self.center
         for i in range(RAY_COUNT):
             x = (p1[0] + (GR * math.cos(rad_slice * i)))
             y = (p1[1] + (GR * math.sin(rad_slice * i)))
             p2 = x, y
-            self.start_points.append(p2)
+            self.points.append(p2)
+            if i == random_point:
+                self.cur_point = p2
 
     def draw(self, screen):
-        for p in self.start_points:
+        for p in self.points:
             pygame.draw.circle(screen, (255, 255, 255), p, 3)
 
-        for p in self.new_points:
-            pygame.draw.circle(screen, (255, 0, 0), p, 3)
+        # for p in self.new_points:
+        #     pygame.draw.circle(screen, (255, 0, 0), p, 3)
 
     def update(self):
-        nex_point = self.random.randint(0, 4)
-        p1 = self.start_points[self.cur_point]
-        p2 = self.start_points[nex_point]
-        p3 = (abs(p1[0]-p2[0]), abs(p1[1]-p2[1]))
-        x = (2*p3[0])/3
-        y = (2*p3[1])/3
-        p4 = (x, y)
+        nex_point = self.random.randint(0, RAY_COUNT - 1)
+        p1 = self.cur_point
+        p2 = self.points[nex_point]
+        p4 = ((2 * (p1[0] - p2[0]))/3, (2*(p1[1]-p2[1]))/3)
         p5 = (p1[0]-p4[0], p1[1]-p4[1])
-        self.new_points.append(p5)
-        self.cur_point = nex_point
+        self.points.append(p5)
+        self.cur_point = p5
         # p3 = ()
         # self.new_points.append(p4)
         # self.cur_point = nex_point
@@ -121,7 +121,7 @@ class Main:
             self.hexagon.draw(self.display.get_screen())
 
             # Tick the clock
-            pygame.time.delay(600)
+            # pygame.time.delay()
             self.clock.tick(60)
             self.display.update()
 
